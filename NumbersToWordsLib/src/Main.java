@@ -14,7 +14,8 @@ public class Main {
         Scanner scanIn = new Scanner(System.in);
         num = scanIn.nextLine();
 
-        n.numToWord(num);
-        //n.numToWord(a);
+        System.out.println(n.numToWord(num));
+
+
     }
 }

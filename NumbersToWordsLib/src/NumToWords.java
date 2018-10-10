@@ -7,21 +7,29 @@ import java.util.HashMap;
 
 public class NumToWords {
 
-    HashMap<Integer,String> words = new HashMap<Integer,String>();
+    HashMap<String,String> words = new HashMap<String,String>();
+    HashMap<String,String> symbols = new HashMap<>();
 
     public String numToWord(String src) throws IOException {
 
-        DataInserter fl = new DataInserter();
-        fl.readFromFile(words);
+        loadFiles();
         StringBuilder digits = new StringBuilder();
+        StringBuilder symbol = new StringBuilder();
         BigDecimal a;
 
         for (int i = 0; i < src.length(); i++) {
 
             char c = src.charAt(i);
+
             if(Character.isDigit(c))
-            {
                 digits.append(c);
+            else if(symbols.get(c) != null)
+            {
+                symbol.append(symbols.get(c));
+            }
+            else
+            {
+                return "Invalid characters";
             }
         }
         a = new BigDecimal(digits.toString());
@@ -54,30 +62,38 @@ public class NumToWords {
                 number = Integer.parseInt(num.toString());
 
                 if(words.get(number)!= null)
-                     word += words.get(number) + " ";
+                     word += words.get(num) + " ";
                 else
                 {
                     i--;
-                    word += words.get(calcNum(chars,i)) + " ";
+                    word += words.get(Integer.toString(calcNum(chars,i)))  + " ";
                 }
             }
             else {
-
-                word += words.get(calcNum(chars,i)) + " ";
+                word += words.get(Integer.toString(calcNum(chars,i))) + " ";
 
             }
 
         }
-        System.out.print(word + " ");
         return word;
     }
 
     public int calcNum(char[] chars, int i)
     {
         double multNum;
+        int res;
         multNum = Math.pow(10, chars.length - i - 1);
-        return (int) (multNum * Character.getNumericValue(chars[i]));
+        res = (int) (multNum * Character.getNumericValue(chars[i]));
+        return  res;
     }
 
+    public void loadFiles()
+    {
+        DataInserter fl = new DataInserter();
+        String filePath = "numbersWords.txt";
+        fl.readFromFile(words,filePath);
+        String fileSymbols = "symbols.txt";
+        fl.readFromFile(symbols,fileSymbols);
+    }
 
 }

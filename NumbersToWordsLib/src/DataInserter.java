@@ -6,22 +6,29 @@ import java.util.Iterator;
 
 public class DataInserter {
 
-    public void readFromFile(HashMap<Integer,String> aHashMap) throws IOException {
+    public void readFromFile(HashMap aHashMap,String filePath)  {
 
-        String filePath = "numbersWords.txt";
         String line;
+        try{
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
         while ((line = reader.readLine()) != null)
         {
             String[] parts = line.split(":", 2);
             if (parts.length >= 2)
             {
-                Integer key = Integer.parseInt(parts[0]);
+                String key = parts[0];
                 String value = parts[1];
                 aHashMap.put(key, value);
-            } else {
+
+            }
+            else {
                 System.out.println("ignoring line: " + line);
             }
+        }}
+        catch (IOException e)
+        {
+            System.out.println("File with numbers does not found");
+            System.exit(0);
         }
 
 
@@ -34,4 +41,5 @@ public class DataInserter {
             it.remove(); // avoids a ConcurrentModificationException
         }
     }
+
 }
