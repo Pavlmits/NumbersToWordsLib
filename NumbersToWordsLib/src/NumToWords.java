@@ -1,7 +1,7 @@
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
+
 import java.util.HashMap;
 
 
@@ -9,49 +9,23 @@ public class NumToWords {
 
     HashMap<Integer,String> words = new HashMap<Integer,String>();
 
-    public String numToWord(BigDecimal x) throws IOException
-    {
+    public String numToWord(String src) throws IOException {
 
+        DataInserter fl = new DataInserter();
+        fl.readFromFile(words);
+        StringBuilder digits = new StringBuilder();
+        BigDecimal a;
 
-        int up = 0;
-        int intVal = 10;
-        BigDecimal div = new BigDecimal("0");
-        BigDecimal one = new BigDecimal("1");
+        for (int i = 0; i < src.length(); i++) {
 
-        String s = intNumToWord(x.toBigInteger());
-        x = cutLastNumber(x);
-        System.out.println(x);
-
-
-        return "";
-    }
-    public String intNumToWord(BigInteger x)
-    {
-        int up;
-        String word;
-        BigInteger div = new BigInteger("100");
-
-        while(x.divide(div).compareTo(new BigInteger("0")) != -1 )//less to 1
-        {
-            up = getlast2Numbers(x);
-            word = words.get(up);
-            if(word == null)
+            char c = src.charAt(i);
+            if(Character.isDigit(c))
             {
-                //up
+                digits.append(c);
             }
-            System.out.println(word);
-            div = div.multiply(new BigInteger("10"));
         }
-        return "xa";
-    }
-
-    public int getlast2Numbers(BigInteger x)
-    {
-        return x.remainder(new BigInteger("100")).intValue();
-    }
-    public BigDecimal cutLastNumber(BigDecimal x)
-    {
-        return x.divide(new BigDecimal("10"),3, RoundingMode.CEILING);
+        a = new BigDecimal(digits.toString());
+        return charArrayToWord(a);
     }
 
     public char[] intToCharArray(BigInteger x)
@@ -62,23 +36,47 @@ public class NumToWords {
 
     public String charArrayToWord(BigDecimal x) throws IOException {
 
-        DataInserter fl = new DataInserter();
-        fl.readFromFile(words);
+
         char[] chars;
-        double multNum;
-        int mul ;
+        int number;
         String word = new String();
+        StringBuilder num = new StringBuilder();
 
         chars = intToCharArray(x.toBigInteger());
 
         for(int i=0; i<chars.length; i++)
         {
-            multNum = Math.pow(10,chars.length-i-1);
-            mul = (int) (multNum*Character.getNumericValue(chars[i]));
-            word = words.get(mul);
-            System.out.print(word + " ");
+            if(chars.length-i == 2)
+            {
+                num.append(chars[i]);
+                i++;
+                num.append(chars[i]);
+                number = Integer.parseInt(num.toString());
+
+                if(words.get(number)!= null)
+                     word += words.get(number) + " ";
+                else
+                {
+                    i--;
+                    word += words.get(calcNum(chars,i)) + " ";
+                }
+            }
+            else {
+
+                word += words.get(calcNum(chars,i)) + " ";
+
+            }
+
         }
+        System.out.print(word + " ");
         return word;
+    }
+
+    public int calcNum(char[] chars, int i)
+    {
+        double multNum;
+        multNum = Math.pow(10, chars.length - i - 1);
+        return (int) (multNum * Character.getNumericValue(chars[i]));
     }
 
 

@@ -13,8 +13,8 @@ public class Main {
         System.out.println("Give a number: ");
         Scanner scanIn = new Scanner(System.in);
         num = scanIn.nextLine();
-        a = new BigDecimal(num);
-        n.charArrayToWord(a);
+
+        n.numToWord(num);
         //n.numToWord(a);
     }
 }
