@@ -10,20 +10,33 @@ public class NumToWords {
     HashMap<String,String> words = new HashMap<String,String>();
     HashMap<String,String> symbols = new HashMap<>();
 
-    public String numToWord(String src) throws IOException {
+    public String numToWord(String src)  {
 
         loadFiles();
+        String word;
+        String[] seperateNum;
+
+        seperateNum = src.split("[, /.]");
+        word = symbolSemerator(seperateNum[0]);
+        if(seperateNum.length != 1) {
+            word += " και ";
+            word += symbolSemerator(seperateNum[1]);
+        }
+
+        return word;
+    }
+    public String symbolSemerator(String src)
+    {
+        BigDecimal a;
         StringBuilder digits = new StringBuilder();
         StringBuilder symbol = new StringBuilder();
-        BigDecimal a;
-
         for (int i = 0; i < src.length(); i++) {
 
             char c = src.charAt(i);
 
             if(Character.isDigit(c))
                 digits.append(c);
-            else if(symbols.get(c) != null)
+            else if(symbols.containsKey(c))
             {
                 symbol.append(symbols.get(c));
             }
@@ -33,7 +46,8 @@ public class NumToWords {
             }
         }
         a = new BigDecimal(digits.toString());
-        return charArrayToWord(a);
+        return charArrayToWord(a) + symbol.toString();
+
     }
 
     public char[] intToCharArray(BigInteger x)
@@ -42,13 +56,12 @@ public class NumToWords {
         return chars;
     }
 
-    public String charArrayToWord(BigDecimal x) throws IOException {
+    public String charArrayToWord(BigDecimal x)  {
 
 
         char[] chars;
-        int number;
         String word = new String();
-        StringBuilder num = new StringBuilder();
+        StringBuilder number = new StringBuilder();
 
         chars = intToCharArray(x.toBigInteger());
 
@@ -56,20 +69,21 @@ public class NumToWords {
         {
             if(chars.length-i == 2)
             {
-                num.append(chars[i]);
+                number.append(chars[i]);
                 i++;
-                num.append(chars[i]);
-                number = Integer.parseInt(num.toString());
+                number.append(chars[i]);
 
-                if(words.get(number)!= null)
-                     word += words.get(num) + " ";
+                if(words.containsKey(number.toString()))
+                     word += words.get(number.toString()) + " ";
                 else
                 {
                     i--;
+                    i += isZero(chars[i],chars.length);
                     word += words.get(Integer.toString(calcNum(chars,i)))  + " ";
                 }
             }
             else {
+                i += isZero(chars[i],chars.length);
                 word += words.get(Integer.toString(calcNum(chars,i))) + " ";
 
             }
@@ -94,6 +108,13 @@ public class NumToWords {
         fl.readFromFile(words,filePath);
         String fileSymbols = "symbols.txt";
         fl.readFromFile(symbols,fileSymbols);
+    }
+    public int isZero(char c, int length)
+    {
+        if(c =='0' && length != 1)
+            return 1;
+        else
+            return 0;
     }
 
 }
