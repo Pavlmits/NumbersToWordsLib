@@ -1,4 +1,3 @@
-import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -17,15 +16,15 @@ public class NumToWords {
         String[] seperateNum;
 
         seperateNum = src.split("[, /.]");
-        word = symbolSemerator(seperateNum[0]);
+        word = symbolSeperator(seperateNum[0]);
         if(seperateNum.length != 1) {
             word += " και ";
-            word += symbolSemerator(seperateNum[1]);
+            word += symbolSeperator(seperateNum[1]);
         }
 
         return word;
     }
-    public String symbolSemerator(String src)
+    public String symbolSeperator(String src)
     {
         BigDecimal a;
         StringBuilder digits = new StringBuilder();
@@ -40,10 +39,7 @@ public class NumToWords {
             {
                 symbol.append(symbols.get(c));
             }
-            else
-            {
-                return "Invalid characters";
-            }
+
         }
         a = new BigDecimal(digits.toString());
         return charArrayToWord(a) + symbol.toString();
@@ -73,17 +69,17 @@ public class NumToWords {
                 i++;
                 number.append(chars[i]);
 
-                if(words.containsKey(number.toString()))
+                if(words.containsKey(number.toString())) //2 digits
                      word += words.get(number.toString()) + " ";
                 else
                 {
                     i--;
-                    i += isZero(chars[i],chars.length);
+                  //  i += isZeroSeq(Arrays.copyOfRange(chars, i, chars.length),chars.length);
                     word += words.get(Integer.toString(calcNum(chars,i)))  + " ";
                 }
             }
             else {
-                i += isZero(chars[i],chars.length);
+               // i += isZeroSeq(Arrays.copyOfRange(chars, i, chars.length),chars.length);
                 word += words.get(Integer.toString(calcNum(chars,i))) + " ";
 
             }
@@ -109,12 +105,18 @@ public class NumToWords {
         String fileSymbols = "symbols.txt";
         fl.readFromFile(symbols,fileSymbols);
     }
-    public int isZero(char c, int length)
+    public int isZeroSeq(char[] c, int length)
     {
-        if(c =='0' && length != 1)
-            return 1;
-        else
-            return 0;
+        int count = 0;
+        for (int i = 0; i < c.length; i++) {
+            if (c[i] == '0' && length != 1)
+                 count++;
+            else
+                return count;
+        }
+        return count;
     }
+
+
 
 }
